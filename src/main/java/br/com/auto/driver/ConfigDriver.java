@@ -8,20 +8,30 @@ import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
+import io.restassured.RestAssured;
+import io.restassured.specification.RequestSpecification;
+
 public class ConfigDriver {
 	
 	private Logger logger = Logger.getLogger(ConfigDriver.class);
 
 	protected static WebDriver driver;
 	protected static WebDriverWait wait;
-	
+	protected static RequestSpecification httpRequest;
 
 
 	public ConfigDriver() {
 
 	}
+	
+	public void setUpApi(String url) {
+		RestAssured.baseURI = url;
+		httpRequest = RestAssured.given();
+	}
+	
+	
 
-	public void setUp(String browser) {
+	public void setUpBrowser(String browser) {
 		logger.info("Inicializando o driver: "+browser);
 		try {
 			
@@ -33,7 +43,8 @@ public class ConfigDriver {
 				options.addArguments("--start-maximized");
 				options.addArguments("--disable-extensions");
 				options.addArguments("--disable-notifications");
-				options.addArguments("enable-automation");
+				options.addArguments("disable-infobars");
+				options.addArguments("--enable-automation");
 				options.addArguments("--disable-popup-blocking");
 				driver = new ChromeDriver(options);
 

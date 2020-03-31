@@ -14,10 +14,10 @@ import com.vimalselvam.cucumber.listener.Reporter;
 import br.com.auto.file.FileConfigProperties;
 import br.com.auto.file.FileExtentConfig;
 import br.com.auto.file.FileUtil;
-import br.com.auto.testBase.TestBase;
+import br.com.auto.tool.TestBaseWeb;
 import cucumber.api.Scenario;
 
-public class Runner extends TestBase {
+public class Runner extends TestBaseWeb {
 
 	private static Runner runner;
 	public static List<String> nameScenario = new ArrayList<String>();
@@ -33,9 +33,9 @@ public class Runner extends TestBase {
 		FileConfigProperties.getInstance().createProperties();
 		FileExtentConfig.getInstance().createXml();
 		ExtentProperties extentProperties = ExtentProperties.INSTANCE;
-		extentProperties.setReportPath(reader.GetPropertyByKey("dir_report_html"));
 		
-		new FileUtil().delete(".\\target\\report-automation\\info.log");
+		extentProperties.setReportPath(reader.getPropertyByKey("dir_report_html"));
+		
 
 	}
 
@@ -46,15 +46,13 @@ public class Runner extends TestBase {
 		} catch (UnsupportedEncodingException e) {
 			e.printStackTrace();
 		}
-		driverSetUp();
+
 	}
 
 	public void after(Scenario scenario) {
 		if (scenario.isFailed())
 			takeScreenShotTest();
-		
-		
-		
+
 		driverquit();
 	}
 
@@ -66,22 +64,19 @@ public class Runner extends TestBase {
 		Reporter.setSystemInfo("Usuario Maquina: ", System.getProperty("user.name"));
 		Reporter.setSystemInfo("Ambiente: ", "Testes");
 		Reporter.assignAuthor("Automation Report");
-		
+
 		FileUtil fileUtil = new FileUtil();
-		
+
 		try {
 			List<String> string = fileUtil.reader(".\\target\\report-automation\\info.log");
 			for (String s : string) {
-				Reporter.setTestRunnerOutput(s+"<br>");
+				Reporter.setTestRunnerOutput(s + "<br>");
 			}
-			
-		
+
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		
-		
-		
+
 //		Reporter.setTestRunnerOutput("<pre>"logs+"</pre>");
 //		
 //		Reporter.setTestRunnerOutput("log 1");

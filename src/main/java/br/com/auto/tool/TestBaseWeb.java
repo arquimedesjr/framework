@@ -1,16 +1,21 @@
-package br.com.auto.testBase;
+package br.com.auto.tool;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
+import org.apache.log4j.Logger;
 import org.junit.Assert;
 import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.OutputType;
 import org.openqa.selenium.TakesScreenshot;
+import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
@@ -19,12 +24,10 @@ import com.assertthat.selenium_shutterbug.core.Shutterbug;
 import com.assertthat.selenium_shutterbug.utils.web.ScrollStrategy;
 import com.vimalselvam.cucumber.listener.Reporter;
 
-import br.com.auto.driver.ConfigDriver;
 import br.com.auto.file.FileConfigProperties;
 import br.com.auto.generator.ImgBase64;
 import br.com.auto.interfaces.Capture;
 import br.com.auto.interfaces.Click;
-import br.com.auto.interfaces.DatesFormat;
 import br.com.auto.interfaces.PrintScreen;
 import br.com.auto.interfaces.Scroll;
 import br.com.auto.interfaces.Select;
@@ -33,18 +36,61 @@ import br.com.auto.interfaces.Validation;
 import br.com.auto.interfaces.WaitForElement;
 import br.com.auto.reader.properties.ConfigFileReader;
 
-public class TestBase extends ConfigDriver
-		implements Capture, Click, DatesFormat, PrintScreen, Scroll, Select, SendKeys, Validation, WaitForElement {
+public class TestBaseWeb
+		implements Capture, Click, PrintScreen, Scroll, Select, SendKeys, Validation, WaitForElement {
 
-	public static ConfigFileReader reader = new ConfigFileReader(FileConfigProperties.dirProperties);
+	protected static ConfigFileReader reader = new ConfigFileReader(FileConfigProperties.dirProperties);
+	protected static ConfigFileReader browser_properties = new ConfigFileReader(FileConfigProperties.dirProperties);
 	public static List<String> logs = new ArrayList<String>();
+	protected static WebDriver driver;
+	protected static WebDriverWait wait;
+	private Logger logger = Logger.getLogger(TestBaseWeb.class);
 
-	public void driverSetUp() {
-		setUp(reader.GetPropertyByKey("browser_name"));
+	public void setUpBrowser() {
+		String browser = browser_properties.getPropertyByKey("browser_name");
+		logger.info("Inicializando o driver: " + browser);
+		try {
+			if (browser.toUpperCase().equals("CHROME")) {
+
+				System.setProperty("webdriver.chrome.driver", browser_properties.getPropertyByKey("chrome_dir"));
+				ChromeOptions options = new ChromeOptions();
+
+				if (browser_properties.getPropertyByKey("chrome_arguments_incognito").equals("true"))
+					options.addArguments("--incognito");
+				if (browser_properties.getPropertyByKey("chrome_arguments_start_maximized").equals("true"))
+					options.addArguments("--start-maximized");
+				if (browser_properties.getPropertyByKey("chrome_arguments_disable_extensions").equals("true"))
+					options.addArguments("--disable-extensions");
+				if (browser_properties.getPropertyByKey("chrome_arguments_disable_notifications").equals("true"))
+					options.addArguments("--disable-notifications");
+				if (browser_properties.getPropertyByKey("chrome_arguments_disable_infobars").equals("true"))
+					options.addArguments("--disable-infobars");
+				if (browser_properties.getPropertyByKey("chrome_arguments_enable_automation").equals("true"))
+					options.addArguments("--enable-automation");
+				if (browser_properties.getPropertyByKey("chrome_arguments_disable_popup_blocking").equals("true"))
+					options.addArguments("--disable-popup-blocking");
+				
+				driver = new ChromeDriver(options);
+
+				driver.manage().timeouts().implicitlyWait(30, TimeUnit.SECONDS);
+				wait = new WebDriverWait(driver, Integer.parseInt(browser_properties.getPropertyByKey("chrome_arguments_wait_driver")));
+
+			} else if (browser.toUpperCase().equals("IE")) {
+				
+				System.setProperty("webdriver.ie.driver", browser_properties.getPropertyByKey("ie_dir"));
+
+			} else if (browser.toUpperCase().equals("FIREFOX")) {
+
+			}
+
+		} catch (Exception e) {
+			e.printStackTrace();
+			logger.error("Erro na inicialização do driver " + browser + ": " + e.getMessage());
+		}
 	}
 
-	public void setUrl() {
-		driver.get(reader.GetPropertyByKey("url"));
+	public void setUrl(String url) {
+		driver.get(url);
 	}
 
 	public void driverquit() {

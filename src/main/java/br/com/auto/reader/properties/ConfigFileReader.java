@@ -39,7 +39,7 @@ public class ConfigFileReader {
 		}
 	}
 	
-	public String GetPropertyByKey(String key) {
+	public String getPropertyByKey(String key) {
 		try{
 			String p = properties.getProperty(key);
 			
