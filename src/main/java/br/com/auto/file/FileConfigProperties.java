@@ -27,7 +27,7 @@ public class FileConfigProperties extends FileUtil {
 	}
 
 	public void createProperties() {
-		logger.info("Criação do arquivo config.propriedades");
+		logger.info("Criação do arquivo "+archive);
 		boolean cond = false;
 
 		cond = createrFile(path, archive);

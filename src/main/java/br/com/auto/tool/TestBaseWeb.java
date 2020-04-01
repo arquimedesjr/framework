@@ -43,7 +43,7 @@ public class TestBaseWeb implements Capture, Click, PrintScreen, Scroll, Selects
 	protected static ConfigFileReader reader = new ConfigFileReader(FileConfigProperties.pathfinal);
 	protected static ConfigFileReader browser_properties = new ConfigFileReader(FileConfigProperties.pathfinal);
 	public static List<String> logs = new ArrayList<String>();
-	protected static WebDriver driver;
+	public WebDriver driver;
 	protected static WebDriverWait wait;
 	private Logger logger = Logger.getLogger(TestBaseWeb.class);
 

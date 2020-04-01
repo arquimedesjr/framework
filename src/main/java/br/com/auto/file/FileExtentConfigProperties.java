@@ -26,15 +26,17 @@ public class FileExtentConfigProperties extends FileUtil{
 		return extentConfig;
 	}
 	
-	public void createXml() {
-		logger.info("Criando o arquivo Extent-Config.xml");
+	public void createProperties() {
+		logger.info("Criação do arquivo "+archive);
 		boolean cond = false;
 
 		cond = createrFile(path, archive);
 
 		if (cond) {
 			List<String> listProperties = new ArrayList<String>();
-			listProperties.add("<?xml version=\"1.0\" encoding=\"UTF-8\"?>");
+			listProperties.add("dir_report = C:\\Users\\Public\\automacao\\config\\Extent-Config.xml"
+					+ "\r\n"
+					+ "dir_report_html = C:\\Users\\Public\\automacao\\report");
 			whiter(pathfinal, listProperties);
 			
 		}

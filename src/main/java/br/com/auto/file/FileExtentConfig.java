@@ -27,7 +27,7 @@ public class FileExtentConfig extends FileUtil{
 	}
 	
 	public void createXml() {
-		logger.info("Criando o arquivo Extent-Config.xml");
+		logger.info("Criação do arquivo "+archive);
 		boolean cond = false;
 
 		cond = createrFile(path, archive);

@@ -27,7 +27,7 @@ public class FileLog4jProperties extends FileUtil {
 	}
 
 	public void createProperties() {
-		logger.info("Criação do arquivo log4j.propriedades");
+		logger.info("Criação do arquivo "+archive);
 		boolean cond = false;
 
 		cond = createrFile(path, archive);

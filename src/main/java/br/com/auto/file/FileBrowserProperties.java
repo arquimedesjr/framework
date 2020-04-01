@@ -27,26 +27,32 @@ public class FileBrowserProperties extends FileUtil {
 	}
 
 	public void createProperties() {
-		logger.info("Criação do arquivo config.propriedades");
+		logger.info("Criação do arquivo "+archive);
 		boolean cond = false;
 
 		cond = createrFile(path, archive);
 
 		if (cond) {
 			List<String> listProperties = new ArrayList<String>();
-			listProperties.add("# config browser chrome arguments\r\n" + 
+			listProperties.add("browser_name = chrome\r\n" + 
 					"\r\n" + 
+					"# CHROME arguments\r\n" + 
 					"\r\n" + 
-					"dir_chromedriver = src\\\\main\\\\resources\\\\driver\\\\chromedriver.exe\r\n" + 
-					"incognito = true\r\n" + 
-					"start-maximized = true\r\n" + 
-					"disable-extensions = true\r\n" + 
-					"disable-notifications = true\r\n" + 
-					"disable-infobars = true\r\n" + 
-					"enable-automation = true\r\n" + 
-					"disable-popup-blocking = true\r\n" + 
+					"chrome_dir = C:\\\\Users\\\\Public\\\\Automacao\\\\drivers\\\\chromedriver.exe\r\n" + 
+					"chrome_arguments_incognito = true\r\n" + 
+					"chrome_arguments_start_maximized = true\r\n" + 
+					"chrome_arguments_disable_extensions = true\r\n" + 
+					"chrome_arguments_disable_notifications = true\r\n" + 
+					"chrome_arguments_disable_infobars = true\r\n" + 
+					"chrome_arguments_enable_automation = true\r\n" + 
+					"chrome_arguments_disable_popup_blocking = true\r\n" + 
 					"\r\n" + 
-					"wait_driver = 10");
+					"chrome_arguments_wait_driver = 10\r\n" + 
+					"\r\n" + 
+					"# IE arguments\r\n" + 
+					"\r\n" + 
+					"ie_dir = C:\\\\Users\\\\Public\\\\Automacao\\\\drivers\\\\IEDriverServer.exe\r\n" + 
+					"ie_arguments_wait_driver = 10");
 			whiter(pathfinal, listProperties);
 			
 		}
