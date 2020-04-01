@@ -12,12 +12,12 @@ public class FileExtentConfig extends FileUtil{
 	
 	private static FileExtentConfig extentConfig;
 
-	public static final String path = "src" + File.separator + "test" + File.separator + "resources" + File.separator
-			+ "config";
+	public final static String path = "C:" + File.separator + "Users" + File.separator + "Public" + File.separator
+			+ "automacao"+ File.separator+ "config";
 	
 	public final static String archive = "Extent-Config.xml";
 
-	public static String dirExtentConfig = path + File.separator +archive;
+	public static String pathfinal = path + File.separator +archive;
 
 	public static FileExtentConfig getInstance() {
 		if (extentConfig == null) {
@@ -68,7 +68,7 @@ public class FileExtentConfig extends FileUtil{
 			listProperties.add("		</styles>");
 			listProperties.add("	</configuration>");
 			listProperties.add("</extentreports>");
-			whiter(dirExtentConfig, listProperties);
+			whiter(pathfinal, listProperties);
 			
 		}
 

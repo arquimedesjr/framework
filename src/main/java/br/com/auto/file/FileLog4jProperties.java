@@ -12,11 +12,12 @@ public class FileLog4jProperties extends FileUtil {
 
 	private static FileLog4jProperties configProperties;
 
-	public final static String path = "src" + File.separator + "test" + File.separator + "resources" + File.separator
-			+ "config";
+	public final static String path = "C:" + File.separator + "Users" + File.separator + "Public" + File.separator
+			+ "automacao"+ File.separator+ "properties";
+	
 	public final static String archive = "log4j.properties";
 
-	public static String dirProperties = path + File.separator +archive;
+	public static String pathfinal = path + File.separator +archive;
 
 	public static FileLog4jProperties getInstance() {
 		if (configProperties == null) {
@@ -36,7 +37,7 @@ public class FileLog4jProperties extends FileUtil {
 			listProperties.add("browser_name=CHROME");
 			listProperties.add("url=https://www.google.com/");
 			listProperties.add("dir_report_html=target/report-automation/report.html");
-			whiter(dirProperties, listProperties);
+			whiter(pathfinal, listProperties);
 			
 		}
 

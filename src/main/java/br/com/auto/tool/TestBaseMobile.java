@@ -8,17 +8,17 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
-import br.com.auto.interfaces.Capture;
-import br.com.auto.interfaces.Click;
-import br.com.auto.interfaces.PrintScreen;
-import br.com.auto.interfaces.Scroll;
-import br.com.auto.interfaces.Select;
-import br.com.auto.interfaces.SendKeys;
-import br.com.auto.interfaces.Validation;
-import br.com.auto.interfaces.WaitForElement;
+import br.com.auto.tool.interfaces.Capture;
+import br.com.auto.tool.interfaces.Click;
+import br.com.auto.tool.interfaces.PrintScreen;
+import br.com.auto.tool.interfaces.Scroll;
+import br.com.auto.tool.interfaces.Selects;
+import br.com.auto.tool.interfaces.SendKeys;
+import br.com.auto.tool.interfaces.Validation;
+import br.com.auto.tool.interfaces.WaitForElement;
 
 public class TestBaseMobile
-		implements Capture, Click, PrintScreen, Scroll, Select, SendKeys, Validation, WaitForElement {
+		implements Capture, Click, PrintScreen, Scroll, Selects, SendKeys, Validation, WaitForElement {
 
 //	protected static ConfigFileReader browser_properties = new ConfigFileReader(FileConfigProperties.dirProperties);
 	public static List<String> logs = new ArrayList<String>();

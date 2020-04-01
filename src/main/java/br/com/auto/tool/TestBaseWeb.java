@@ -16,8 +16,10 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
+import org.openqa.selenium.interactions.Action;
 import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.Select;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
 import com.assertthat.selenium_shutterbug.core.Shutterbug;
@@ -26,21 +28,20 @@ import com.vimalselvam.cucumber.listener.Reporter;
 
 import br.com.auto.file.FileConfigProperties;
 import br.com.auto.generator.ImgBase64;
-import br.com.auto.interfaces.Capture;
-import br.com.auto.interfaces.Click;
-import br.com.auto.interfaces.PrintScreen;
-import br.com.auto.interfaces.Scroll;
-import br.com.auto.interfaces.Select;
-import br.com.auto.interfaces.SendKeys;
-import br.com.auto.interfaces.Validation;
-import br.com.auto.interfaces.WaitForElement;
 import br.com.auto.reader.properties.ConfigFileReader;
+import br.com.auto.tool.interfaces.Capture;
+import br.com.auto.tool.interfaces.Click;
+import br.com.auto.tool.interfaces.PrintScreen;
+import br.com.auto.tool.interfaces.Scroll;
+import br.com.auto.tool.interfaces.Selects;
+import br.com.auto.tool.interfaces.SendKeys;
+import br.com.auto.tool.interfaces.Validation;
+import br.com.auto.tool.interfaces.WaitForElement;
 
-public class TestBaseWeb
-		implements Capture, Click, PrintScreen, Scroll, Select, SendKeys, Validation, WaitForElement {
+public class TestBaseWeb implements Capture, Click, PrintScreen, Scroll, Selects, SendKeys, Validation, WaitForElement {
 
-	protected static ConfigFileReader reader = new ConfigFileReader(FileConfigProperties.dirProperties);
-	protected static ConfigFileReader browser_properties = new ConfigFileReader(FileConfigProperties.dirProperties);
+	protected static ConfigFileReader reader = new ConfigFileReader(FileConfigProperties.pathfinal);
+	protected static ConfigFileReader browser_properties = new ConfigFileReader(FileConfigProperties.pathfinal);
 	public static List<String> logs = new ArrayList<String>();
 	protected static WebDriver driver;
 	protected static WebDriverWait wait;
@@ -69,14 +70,15 @@ public class TestBaseWeb
 					options.addArguments("--enable-automation");
 				if (browser_properties.getPropertyByKey("chrome_arguments_disable_popup_blocking").equals("true"))
 					options.addArguments("--disable-popup-blocking");
-				
+
 				driver = new ChromeDriver(options);
 
 				driver.manage().timeouts().implicitlyWait(30, TimeUnit.SECONDS);
-				wait = new WebDriverWait(driver, Integer.parseInt(browser_properties.getPropertyByKey("chrome_arguments_wait_driver")));
+				wait = new WebDriverWait(driver,
+						Integer.parseInt(browser_properties.getPropertyByKey("chrome_arguments_wait_driver")));
 
 			} else if (browser.toUpperCase().equals("IE")) {
-				
+
 				System.setProperty("webdriver.ie.driver", browser_properties.getPropertyByKey("ie_dir"));
 
 			} else if (browser.toUpperCase().equals("FIREFOX")) {
@@ -114,45 +116,32 @@ public class TestBaseWeb
 	}
 
 	public void clickForELement(WebElement element, int secons) {
-		// TODO Auto-generated method stub
+		waitElementToBeClickable(element, secons);
+		element.click();
 
 	}
 
 	public void clickForElementAction(WebElement element, int secons) {
-		// TODO Auto-generated method stub
+		waitElementToBeClickable(element, secons);
+		Actions ob = new Actions(driver);
+		ob.click(element);
+		Action action = ob.build();
+		action.perform();
 
 	}
 
 	public void clickForElementAction(WebElement element) {
-		// TODO Auto-generated method stub
-
-	}
-
-	public String insertDaysNext(int dayNext) {
-		// TODO Auto-generated method stub
-
-		return null;
-	}
-
-	public String dateHours() {
-		// TODO Auto-generated method stub
-
-		return null;
-	}
-
-	public String dateToday() {
-		// TODO Auto-generated method stub
-
-		return null;
-	}
-
-	public void waitFluent() {
-		// TODO Auto-generated method stub
+		waitElementToBeClickable(element);
+		Actions ob = new Actions(driver);
+		ob.click(element);
+		Action action = ob.build();
+		action.perform();
 
 	}
 
 	public void waitElementVisibility(By by, int second) {
-		// TODO Auto-generated method stub
+		WebDriverWait wait = new WebDriverWait(driver, second);
+		wait.until(ExpectedConditions.visibilityOfAllElementsLocatedBy(by));
 
 	}
 
@@ -166,12 +155,13 @@ public class TestBaseWeb
 	}
 
 	public void waitElementInvisibility(By by, int second) {
-		// TODO Auto-generated method stub
+		WebDriverWait wait = new WebDriverWait(driver, second);
+		wait.until(ExpectedConditions.invisibilityOfElementLocated(by));
 
 	}
 
 	public void waitElementInvisibility(By by) {
-		// TODO Auto-generated method stub
+		wait.until(ExpectedConditions.invisibilityOfElementLocated(by));
 
 	}
 
@@ -199,11 +189,9 @@ public class TestBaseWeb
 	public void waitElementToBeClickable(By by) {
 		logs.add("Verifico se o elemento <" + by.toString() + "> é clicavel");
 		wait.until(ExpectedConditions.elementToBeClickable(by));
-
 	}
 
 	public void waitElementToBeClickable(WebElement element) {
-
 		wait.until(ExpectedConditions.elementToBeClickable(element));
 	}
 
@@ -218,7 +206,7 @@ public class TestBaseWeb
 	public void takeScreenShotTest() {
 		String imagem = ((TakesScreenshot) driver).getScreenshotAs(OutputType.BASE64);
 		screenReport(imagem);
-		logs.add("Capturo imagem do browser");
+		logs.add("Capturo imagem");
 	}
 
 	public void takeScreenShotTest(By by, int secons) {
@@ -231,29 +219,19 @@ public class TestBaseWeb
 		takeScreenShotTest();
 	}
 
-	public void takeScreenShotTest(WebElement element, int secons) {
-		// TODO Auto-generated method stub
-
-	}
-
-	public void takeScreenShotTest(WebElement element) {
-		// TODO Auto-generated method stub
-
-	}
-
 	public void takeScreenShotTestAllPage() {
 		logs.add("Capturo imagem do browser 'Tela Inteira'");
 		String path = "." + File.separator + "src" + File.separator + "test" + File.separator + "resources";
 		String archive = "print";
 
 		Shutterbug.shootPage(driver, ScrollStrategy.WHOLE_PAGE, true).withName(archive).save(path);
-
 		screenReport(new ImgBase64().convertImgBase64Delete(path + File.separator + archive + ".png"));
 
 	}
 
 	public void takeScreenShotTestAllPage(By by, int secons) {
-
+		waitElementPresent(by, secons);
+		takeScreenShotTestAllPage();
 	}
 
 	public void takeScreenShotTestAllPage(By by) {
@@ -262,13 +240,9 @@ public class TestBaseWeb
 
 	}
 
-	public void takeScreenShotTestAllPage(WebElement element, int secons) {
-		// TODO Auto-generated method stub
-
-	}
-
 	public void takeScreenShotTestAllPage(WebElement element) {
-		// TODO Auto-generated method stub
+		waitElementVisibility(element);
+		takeScreenShotTestAllPage();
 
 	}
 
@@ -279,28 +253,39 @@ public class TestBaseWeb
 	}
 
 	public void sendkeysELement(By by, String value, int secons) {
-		// TODO Auto-generated method stub
+		waitElementVisibility(by, secons);
+		driver.findElement(by).sendKeys(value);
 
 	}
 
 	public void sendkeysELement(WebElement element, String value) {
-		// TODO Auto-generated method stub
-
+		waitElementToBeClickable(element);
+		element.sendKeys(value);
 	}
 
 	public void sendkeysELement(WebElement element, String value, int secons) {
-		// TODO Auto-generated method stub
+		waitElementToBeClickable(element, secons);
+		element.sendKeys(value);
 
 	}
 
 	public void sendkeysELementAction(WebElement element, String value, int secons) {
-		// TODO Auto-generated method stub
+		waitElementToBeClickable(element, secons);
+		Actions ob = new Actions(driver);
+		ob.click(element);
+		ob.sendKeys(value);
+		Action action = ob.build();
+		action.perform();
 
 	}
 
 	public void sendkeysELementAction(WebElement element, String value) {
-		// TODO Auto-generated method stub
-
+		waitElementToBeClickable(element);
+		Actions ob = new Actions(driver);
+		ob.click(element);
+		ob.sendKeys(value);
+		Action action = ob.build();
+		action.perform();
 	}
 
 	public String captureText(By by) {
@@ -362,77 +347,93 @@ public class TestBaseWeb
 	}
 
 	public void scrolElement(By by, int secons) {
-		// TODO Auto-generated method stub
+		try {
 
-	}
+			WebElement element = driver.findElement(by);
+			waitElementVisibility(by, secons);
+			((JavascriptExecutor) driver).executeScript("arguments[0].scrollIntoView();", element);
 
-	public void scrolElement(WebElement by, int secons) {
-		// TODO Auto-generated method stub
-
-	}
-
-	public void scrolElement(WebElement by) {
-		// TODO Auto-generated method stub
+		} catch (Exception e) {
+			Reporter.addScenarioLog(e.getMessage());
+		}
 
 	}
 
 	public void selectText(By by, String txt, int secons) {
-		// TODO Auto-generated method stub
+		waitElementPresent(by, secons);
+		WebElement element = driver.findElement(by);
+		new Select(element).deselectByValue(txt);
 
 	}
 
 	public void selectText(By by, String txt) {
-		// TODO Auto-generated method stub
+		waitElementPresent(by);
+		WebElement element = driver.findElement(by);
+		new Select(element).deselectByValue(txt);
 
 	}
 
 	public void selectText(WebElement element, String txt) {
-		// TODO Auto-generated method stub
-
+		waitElementToBeClickable(element);
+		new Select(element).deselectByValue(txt);
 	}
 
 	public void selectText(WebElement element, String txt, int secons) {
-		// TODO Auto-generated method stub
+		waitElementToBeClickable(element, secons);
+		new Select(element).deselectByValue(txt);
 
 	}
 
 	public void selectIndex(By by, int index, int secons) {
-		// TODO Auto-generated method stub
-
+		waitElementPresent(by, secons);
+		WebElement element = driver.findElement(by);
+		new Select(element).deselectByIndex(index);
 	}
 
 	public void selectIndex(By by, int index) {
-		// TODO Auto-generated method stub
-
+		waitElementPresent(by);
+		WebElement element = driver.findElement(by);
+		new Select(element).deselectByIndex(index);
 	}
 
 	public void selectIndex(WebElement element, int index) {
-		// TODO Auto-generated method stub
-
+		waitElementToBeClickable(element);
+		new Select(element).deselectByIndex(index);
 	}
 
 	public void selectIndex(WebElement element, int index, int secons) {
-		// TODO Auto-generated method stub
+		waitElementToBeClickable(element, secons);
+		new Select(element).deselectByIndex(index);
 
 	}
 
 	public void clickForElementJS(By by) {
-		// TODO Auto-generated method stub
+		waitElementPresent(by);
+		WebElement element = driver.findElement(by);
+		JavascriptExecutor executor = (JavascriptExecutor) driver;
+		executor.executeScript("arguments[0].click();", element);
 
 	}
 
 	public void clickForElementJS(By by, int secons) {
-		// TODO Auto-generated method stub
+		waitElementPresent(by, secons);
+		WebElement element = driver.findElement(by);
+		JavascriptExecutor executor = (JavascriptExecutor) driver;
+		executor.executeScript("arguments[0].click();", element);
 
 	}
 
 	public void clickForElementJS(WebElement element, int secons) {
-		// TODO Auto-generated method stub
+		waitElementToBeClickable(element, secons);
+		JavascriptExecutor executor = (JavascriptExecutor) driver;
+		executor.executeScript("arguments[0].click();", element);
 
 	}
 
 	public void clickForElementJS(WebElement element) {
-		// TODO Auto-generated method stub
+		waitElementToBeClickable(element);
+		JavascriptExecutor executor = (JavascriptExecutor) driver;
+		executor.executeScript("arguments[0].click();", element);
 
 	}
 

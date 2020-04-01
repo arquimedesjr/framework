@@ -6,37 +6,35 @@ import java.util.List;
 
 import org.apache.log4j.Logger;
 
-public class FileConfigProperties extends FileUtil {
+public class FileExtentConfigProperties extends FileUtil{
 	
 	private Logger logger = Logger.getLogger(FileConfigProperties.class);
-
-	private static FileConfigProperties configProperties;
+	
+	private static FileExtentConfigProperties extentConfig;
 
 	public final static String path = "C:" + File.separator + "Users" + File.separator + "Public" + File.separator
 			+ "automacao"+ File.separator+ "properties";
 	
-	public final static String archive = "config.properties";
+	public final static String archive = "extent_report.properties";
 
 	public static String pathfinal = path + File.separator +archive;
 
-	public static FileConfigProperties getInstance() {
-		if (configProperties == null) {
-			configProperties = new FileConfigProperties();
+	public static FileExtentConfigProperties getInstance() {
+		if (extentConfig == null) {
+			extentConfig = new FileExtentConfigProperties();
 		}
-		return configProperties;
+		return extentConfig;
 	}
-
-	public void createProperties() {
-		logger.info("Criação do arquivo config.propriedades");
+	
+	public void createXml() {
+		logger.info("Criando o arquivo Extent-Config.xml");
 		boolean cond = false;
 
 		cond = createrFile(path, archive);
 
 		if (cond) {
 			List<String> listProperties = new ArrayList<String>();
-			listProperties.add("browser_name=CHROME");
-			listProperties.add("url=https://www.google.com/");
-			listProperties.add("dir_report_html=target/report-automation/report.html");
+			listProperties.add("<?xml version=\"1.0\" encoding=\"UTF-8\"?>");
 			whiter(pathfinal, listProperties);
 			
 		}
