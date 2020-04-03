@@ -6,18 +6,20 @@ import java.util.List;
 
 import org.apache.log4j.Logger;
 
-public class FileExtentConfig extends FileUtil{
-	
+import br.com.auto.reader.properties.ConfigFileReader;
+
+public class FileExtentConfig extends FileUtil {
+
 	private Logger logger = Logger.getLogger(FileConfigProperties.class);
-	
+
 	private static FileExtentConfig extentConfig;
 
-	public final static String path = "C:" + File.separator + "Users" + File.separator + "Public" + File.separator
-			+ "automacao"+ File.separator+ "config";
-	
-	public final static String archive = "Extent-Config.xml";
+	private final static String path = "C:" + File.separator + "Users" + File.separator + "Public" + File.separator
+			+ "automacao" + File.separator + "config";
 
-	public static String pathfinal = path + File.separator +archive;
+	private final static String archive = "Extent-Config.xml";
+
+	private static String pathfinal = path + File.separator + archive;
 
 	public static FileExtentConfig getInstance() {
 		if (extentConfig == null) {
@@ -25,9 +27,9 @@ public class FileExtentConfig extends FileUtil{
 		}
 		return extentConfig;
 	}
-	
+
 	public void createXml() {
-		logger.info("Criação do arquivo "+archive);
+		logger.info("Criação do arquivo " + archive);
 		boolean cond = false;
 
 		cond = createrFile(path, archive);
@@ -60,7 +62,8 @@ public class FileExtentConfig extends FileUtil{
 			listProperties.add("		<testViewChartLocation>top</testViewChartLocation>");
 			listProperties.add("		<!-- custom javascript -->");
 			listProperties.add("		<scripts>");
-			listProperties.add("		<![CDATA[$(document).ready(function(){$('.brand-logo black').css('display','none');});]]>");
+			listProperties.add(
+					"		<![CDATA[$(document).ready(function(){$('.brand-logo black').css('display','none');});]]>");
 			listProperties.add("		</scripts>");
 			listProperties.add("		<!-- custom styles -->");
 			listProperties.add("		<styles>");
@@ -69,9 +72,14 @@ public class FileExtentConfig extends FileUtil{
 			listProperties.add("	</configuration>");
 			listProperties.add("</extentreports>");
 			whiter(pathfinal, listProperties);
-			
+
 		}
 
+	}
+
+	public String searchKeyProperties(String key) {
+		logger.info("Procurando no arquivo "+archive+" o valor da chave "+key);
+		return new ConfigFileReader(pathfinal).getPropertyByKey(key);
 	}
 
 }

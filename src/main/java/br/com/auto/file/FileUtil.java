@@ -90,7 +90,7 @@ public class FileUtil {
 	}
 
 	public void delete(String path) {
-		logger.info("Excluindo o arquivo "+path);
+		logger.info("Excluindo o arquivo " + path);
 		File file = new File(path);
 
 		if (file.exists())

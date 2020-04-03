@@ -26,9 +26,8 @@ import com.assertthat.selenium_shutterbug.core.Shutterbug;
 import com.assertthat.selenium_shutterbug.utils.web.ScrollStrategy;
 import com.vimalselvam.cucumber.listener.Reporter;
 
-import br.com.auto.file.FileConfigProperties;
+import br.com.auto.file.FileBrowserProperties;
 import br.com.auto.generator.ImgBase64;
-import br.com.auto.reader.properties.ConfigFileReader;
 import br.com.auto.tool.interfaces.Capture;
 import br.com.auto.tool.interfaces.Click;
 import br.com.auto.tool.interfaces.PrintScreen;
@@ -40,46 +39,53 @@ import br.com.auto.tool.interfaces.WaitForElement;
 
 public class TestBaseWeb implements Capture, Click, PrintScreen, Scroll, Selects, SendKeys, Validation, WaitForElement {
 
-	protected static ConfigFileReader reader = new ConfigFileReader(FileConfigProperties.pathfinal);
-	protected static ConfigFileReader browser_properties = new ConfigFileReader(FileConfigProperties.pathfinal);
 	public static List<String> logs = new ArrayList<String>();
 	public WebDriver driver;
 	protected static WebDriverWait wait;
 	private Logger logger = Logger.getLogger(TestBaseWeb.class);
 
 	public void setUpBrowser() {
-		String browser = browser_properties.getPropertyByKey("browser_name");
-		logger.info("Inicializando o driver: " + browser);
+		String browser = FileBrowserProperties.getInstance().searchKeyProperties("browser_name");
+		logger.info("**********\n" + "***********  Inicializando o driver: " + browser + "\n***********");
 		try {
 			if (browser.toUpperCase().equals("CHROME")) {
 
-				System.setProperty("webdriver.chrome.driver", browser_properties.getPropertyByKey("chrome_dir"));
+				System.setProperty("webdriver.chrome.driver",
+						FileBrowserProperties.getInstance().searchKeyProperties("chrome_dir"));
 				ChromeOptions options = new ChromeOptions();
 
-				if (browser_properties.getPropertyByKey("chrome_arguments_incognito").equals("true"))
+				if (FileBrowserProperties.getInstance().searchKeyProperties("chrome_arguments_incognito")
+						.equals("true"))
 					options.addArguments("--incognito");
-				if (browser_properties.getPropertyByKey("chrome_arguments_start_maximized").equals("true"))
+				if (FileBrowserProperties.getInstance().searchKeyProperties("chrome_arguments_start_maximized")
+						.equals("true"))
 					options.addArguments("--start-maximized");
-				if (browser_properties.getPropertyByKey("chrome_arguments_disable_extensions").equals("true"))
+				if (FileBrowserProperties.getInstance().searchKeyProperties("chrome_arguments_disable_extensions")
+						.equals("true"))
 					options.addArguments("--disable-extensions");
-				if (browser_properties.getPropertyByKey("chrome_arguments_disable_notifications").equals("true"))
+				if (FileBrowserProperties.getInstance().searchKeyProperties("chrome_arguments_disable_notifications")
+						.equals("true"))
 					options.addArguments("--disable-notifications");
-				if (browser_properties.getPropertyByKey("chrome_arguments_disable_infobars").equals("true"))
+				if (FileBrowserProperties.getInstance().searchKeyProperties("chrome_arguments_disable_infobars")
+						.equals("true"))
 					options.addArguments("--disable-infobars");
-				if (browser_properties.getPropertyByKey("chrome_arguments_enable_automation").equals("true"))
+				if (FileBrowserProperties.getInstance().searchKeyProperties("chrome_arguments_enable_automation")
+						.equals("true"))
 					options.addArguments("--enable-automation");
-				if (browser_properties.getPropertyByKey("chrome_arguments_disable_popup_blocking").equals("true"))
+				if (FileBrowserProperties.getInstance().searchKeyProperties("chrome_arguments_disable_popup_blocking")
+						.equals("true"))
 					options.addArguments("--disable-popup-blocking");
 
 				driver = new ChromeDriver(options);
 
 				driver.manage().timeouts().implicitlyWait(30, TimeUnit.SECONDS);
-				wait = new WebDriverWait(driver,
-						Integer.parseInt(browser_properties.getPropertyByKey("chrome_arguments_wait_driver")));
+				wait = new WebDriverWait(driver, Integer.parseInt(
+						FileBrowserProperties.getInstance().searchKeyProperties("chrome_arguments_wait_driver")));
 
 			} else if (browser.toUpperCase().equals("IE")) {
 
-				System.setProperty("webdriver.ie.driver", browser_properties.getPropertyByKey("ie_dir"));
+				System.setProperty("webdriver.ie.driver",
+						FileBrowserProperties.getInstance().searchKeyProperties("ie_dir"));
 
 			} else if (browser.toUpperCase().equals("FIREFOX")) {
 
@@ -92,36 +98,43 @@ public class TestBaseWeb implements Capture, Click, PrintScreen, Scroll, Selects
 	}
 
 	public void setUrl(String url) {
+		logger.info("Acessando com a url: " + url);
 		driver.get(url);
 	}
 
 	public void driverquit() {
+		logger.info("Finalizando cenario.");
 		driver.quit();
 	}
 
 	public void clickForELement(By by) {
+		logger.info("Clicando no elemento " + by.toString());
 		waitElementToBeClickable(by);
 		driver.findElement(by).click();
-		logs.add("Clico no Elemento <" + by.toString() + ">");
+//		logs.add("Clico no Elemento <" + by.toString() + ">");
 	}
 
 	public void clickForELement(By by, int secons) {
+		logger.info("Clicando no elemento " + by.toString());
 		waitElementToBeClickable(by, secons);
 		driver.findElement(by).click();
 	}
 
 	public void clickForELement(WebElement element) {
+		logger.info("Clicando no elemento " + element.toString());
 		waitElementToBeClickable(element);
 		element.click();
 	}
 
 	public void clickForELement(WebElement element, int secons) {
+		logger.info("Clicando no elemento " + element.toString());
 		waitElementToBeClickable(element, secons);
 		element.click();
 
 	}
 
 	public void clickForElementAction(WebElement element, int secons) {
+		logger.info("Clicando no elemento " + element.toString());
 		waitElementToBeClickable(element, secons);
 		Actions ob = new Actions(driver);
 		ob.click(element);
@@ -131,6 +144,7 @@ public class TestBaseWeb implements Capture, Click, PrintScreen, Scroll, Selects
 	}
 
 	public void clickForElementAction(WebElement element) {
+		logger.info("Clicando no elemento " + element.toString());
 		waitElementToBeClickable(element);
 		Actions ob = new Actions(driver);
 		ob.click(element);
@@ -140,63 +154,75 @@ public class TestBaseWeb implements Capture, Click, PrintScreen, Scroll, Selects
 	}
 
 	public void waitElementVisibility(By by, int second) {
+		logger.info("Aguardando o Elemento " + by.toString() + " com o tempo de " + second);
 		WebDriverWait wait = new WebDriverWait(driver, second);
 		wait.until(ExpectedConditions.visibilityOfAllElementsLocatedBy(by));
 
 	}
 
 	public void waitElementVisibility(By by) {
-		logs.add("Aguardo o Elemento <" + by.toString() + ">");
+		logger.info("Aguardando o Elemento " + by.toString());
+//		logs.add("Aguardo o Elemento <" + by.toString() + ">");
 		wait.until(ExpectedConditions.visibilityOfAllElementsLocatedBy(by));
 	}
 
 	public void waitElementVisibility(WebElement element) {
+		logger.info("Aguardando o Elemento " + element.toString());
 		wait.until(ExpectedConditions.visibilityOf(element));
 	}
 
 	public void waitElementInvisibility(By by, int second) {
+		logger.info("Aguardando o Elemento " + by.toString() + " com o tempo de " + second);
 		WebDriverWait wait = new WebDriverWait(driver, second);
 		wait.until(ExpectedConditions.invisibilityOfElementLocated(by));
 
 	}
 
 	public void waitElementInvisibility(By by) {
+		logger.info("Aguardando o Elemento " + by.toString());
 		wait.until(ExpectedConditions.invisibilityOfElementLocated(by));
 
 	}
 
 	public void waitElementPresent(By by) {
+		logger.info("Aguardando o Elemento " + by.toString());
 		wait.until(ExpectedConditions.presenceOfElementLocated(by));
 	}
 
 	public void waitElementPresent(By by, int second) {
+		logger.info("Aguardando o Elemento " + by.toString() + " com o tempo de " + second);
 		WebDriverWait wait = new WebDriverWait(driver, second);
 		wait.until(ExpectedConditions.presenceOfElementLocated(by));
 
 	}
 
 	public void waitElementToBeClickable(By by, int second) {
+		logger.info("Aguardando o Elemento " + by.toString() + " com o tempo de " + second);
 		WebDriverWait wait = new WebDriverWait(driver, second);
 		wait.until(ExpectedConditions.elementToBeClickable(by));
 	}
 
 	public void waitElementToBeClickable(WebElement element, int second) {
+		logger.info("Aguardando o Elemento " + element.toString() + " com o tempo de " + second);
 		WebDriverWait wait = new WebDriverWait(driver, second);
 		wait.until(ExpectedConditions.elementToBeClickable(element));
 
 	}
 
 	public void waitElementToBeClickable(By by) {
-		logs.add("Verifico se o elemento <" + by.toString() + "> é clicavel");
+		logger.info("Aguardando o Elemento " + by.toString());
+//		logs.add("Verifico se o elemento <" + by.toString() + "> é clicavel");
 		wait.until(ExpectedConditions.elementToBeClickable(by));
 	}
 
 	public void waitElementToBeClickable(WebElement element) {
+		logger.info("Aguardando o Elemento " + element.toString());
 		wait.until(ExpectedConditions.elementToBeClickable(element));
 	}
 
 	public void screenReport(String imagem) {
 		try {
+			logger.info("Adicionando a imagem no report");
 			Reporter.addScreenCaptureFromPath("data:image/png;base64," + imagem);
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -204,23 +230,27 @@ public class TestBaseWeb implements Capture, Click, PrintScreen, Scroll, Selects
 	}
 
 	public void takeScreenShotTest() {
+		logger.info("Capturando a imagem");
 		String imagem = ((TakesScreenshot) driver).getScreenshotAs(OutputType.BASE64);
 		screenReport(imagem);
-		logs.add("Capturo imagem");
+//		logs.add("Capturo imagem");
 	}
 
 	public void takeScreenShotTest(By by, int secons) {
+		logger.info("Aguardando o elemento " + by.toString() + " com o tempo de " + secons + " para capturar a imagem");
 		waitElementPresent(by, secons);
 		takeScreenShotTest();
 	}
 
 	public void takeScreenShotTest(By by) {
+		logger.info("Aguardando o elemento " + by.toString() + "  para capturar a imagem");
 		waitElementPresent(by);
 		takeScreenShotTest();
 	}
 
 	public void takeScreenShotTestAllPage() {
-		logs.add("Capturo imagem do browser 'Tela Inteira'");
+//		logs.add("Capturo imagem do browser 'Tela Inteira'");
+		logger.info("Capturo imagem do browser Tela Inteira");
 		String path = "." + File.separator + "src" + File.separator + "test" + File.separator + "resources";
 		String archive = "print";
 
@@ -230,46 +260,54 @@ public class TestBaseWeb implements Capture, Click, PrintScreen, Scroll, Selects
 	}
 
 	public void takeScreenShotTestAllPage(By by, int secons) {
+		logger.info("Aguardando o elemento " + by.toString() + " com o tempo de " + secons + " para capturar a imagem");
 		waitElementPresent(by, secons);
 		takeScreenShotTestAllPage();
 	}
 
 	public void takeScreenShotTestAllPage(By by) {
+		logger.info("Aguardando o elemento " + by.toString() + " para capturar a imagem");
 		waitElementPresent(by);
 		takeScreenShotTestAllPage();
 
 	}
 
 	public void takeScreenShotTestAllPage(WebElement element) {
+		logger.info("Aguardando o elemento " + element.toString() + " para capturar a imagem");
 		waitElementVisibility(element);
 		takeScreenShotTestAllPage();
 
 	}
 
 	public void sendkeysELement(By by, String value) {
+		logger.info("Escrevendo no elemento " + by.toString() + " com o valor " + value);
 		waitElementVisibility(by);
 		logs.add("No elemento " + by.toString() + " escrevo" + value);
 		driver.findElement(by).sendKeys(value);
 	}
 
 	public void sendkeysELement(By by, String value, int secons) {
+		logger.info("Escrevendo no elemento " + by.toString() + " com o valor " + value);
 		waitElementVisibility(by, secons);
 		driver.findElement(by).sendKeys(value);
 
 	}
 
 	public void sendkeysELement(WebElement element, String value) {
+		logger.info("Escrevendo no elemento " + element.toString() + " com o valor " + value);
 		waitElementToBeClickable(element);
 		element.sendKeys(value);
 	}
 
 	public void sendkeysELement(WebElement element, String value, int secons) {
+		logger.info("Escrevendo no elemento " + element.toString() + " com o valor " + value);
 		waitElementToBeClickable(element, secons);
 		element.sendKeys(value);
 
 	}
 
 	public void sendkeysELementAction(WebElement element, String value, int secons) {
+		logger.info("Escrevendo no elemento " + element.toString() + " com o valor " + value);
 		waitElementToBeClickable(element, secons);
 		Actions ob = new Actions(driver);
 		ob.click(element);
@@ -280,6 +318,7 @@ public class TestBaseWeb implements Capture, Click, PrintScreen, Scroll, Selects
 	}
 
 	public void sendkeysELementAction(WebElement element, String value) {
+		logger.info("Escrevendo no elemento " + element.toString() + " com o valor " + value);
 		waitElementToBeClickable(element);
 		Actions ob = new Actions(driver);
 		ob.click(element);
