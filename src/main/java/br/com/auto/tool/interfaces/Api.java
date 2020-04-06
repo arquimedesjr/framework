@@ -6,11 +6,13 @@ public interface Api {
 	
 	public void post(String pathJson);
 	
-	public void get();
+	public String get();
 	
 	public void delete();
 	
-	public void update();
+	public void update(String pathJson);
+	
+	public void validacion(String key, String value);
 	
 
 }

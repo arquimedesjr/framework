@@ -94,18 +94,19 @@ public class TestToolUtils {
 			logger.error(e.getMessage());
 		}
 
-		if (FileConfigProperties.getInstance().searchKeyProperties("plataform_test").toUpperCase().equals("BROWSER"))
-			testBasewWeb.setUpBrowser();
-
 	}
 
 	public void after(Scenario scenario) {
-
-		if (FileConfigProperties.getInstance().searchKeyProperties("plataform_test").toUpperCase().equals("BROWSER")) {
-			if (scenario.isFailed()) {
-				testBasewWeb.takeScreenShotTest();
+		
+		if (testBasewWeb.driver != null) {
+			if (FileConfigProperties.getInstance().searchKeyProperties("plataform_test").toUpperCase()
+					.contains("BROWSER")) {
+				if (scenario.isFailed()) {
+					testBasewWeb.takeScreenShotTest();
+				}
+				testBasewWeb.driverquit();
+				testBasewWeb.driver = null;
 			}
-			testBasewWeb.driverquit();
 		}
 
 	}
